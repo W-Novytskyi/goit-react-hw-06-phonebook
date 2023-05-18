@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
 import {
   ContainerForm,
   Container,
@@ -7,9 +8,9 @@ import {
   Input,
   Button,
 } from './ContactForm.styled';
-import PropTypes from 'prop-types';
 
-export default function ContactForm({ onAddContact }) {
+export default function ContactForm() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -30,12 +31,9 @@ export default function ContactForm({ onAddContact }) {
     }
   };
 
-  const addContact = () => {
-    const id = nanoid();
-
+  const handleAddContact = () => {
     if (name !== '' && number !== '') {
-      const newContact = { id, name, number };
-      onAddContact(newContact);
+      dispatch(addContact(name, number));
       reset();
     }
   };
@@ -75,13 +73,9 @@ export default function ContactForm({ onAddContact }) {
           />
         </Label>
       </Container>
-      <Button type="button" onClick={addContact}>
+      <Button type="button" onClick={handleAddContact}>
         Add contact
       </Button>
     </ContainerForm>
   );
 }
-
-ContactForm.propTypes = {
-  onAddContact: PropTypes.func.isRequired,
-};
