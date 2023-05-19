@@ -10,14 +10,14 @@ import { setStatusFilter } from 'redux/filtersSlice';
 export default function App() {
   const dispatch = useDispatch();
   const filter = useSelector(state => state.filters);
-  const contacts = useSelector(state => state.contacts);
+  const contactItems = useSelector(state => state.contacts.items);
   // const [contacts, setContacts] = useState(() => {
   //   return JSON.parse(window.localStorage.getItem('contacts')) ?? [];
   // });
   // const [filter, setFilter] = useState('');
 
   const addContact = newContact => {
-    const isNameExists = contacts.some(
+    const isNameExists = contactItems.some(
       contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
     if (isNameExists) {
@@ -38,7 +38,7 @@ export default function App() {
   const filteredContacts = useSelector(state => {
     const normalizedFilter = state.filters.toLowerCase();
 
-    return state.contacts.filter(contact =>
+    return state.contacts.items.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   });

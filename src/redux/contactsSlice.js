@@ -1,6 +1,10 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-const contactsInitialState = [];
+const contactsInitialState = {
+  items: [],
+};
 
 const contactsSlice = createSlice({
   name: 'contacts',
@@ -8,7 +12,7 @@ const contactsSlice = createSlice({
   reducers: {
     addContact: {
       reducer(state, action) {
-        state.push(action.payload);
+        state.items.push(action.payload);
       },
       prepare(name, number) {
         return {
@@ -21,20 +25,31 @@ const contactsSlice = createSlice({
       },
     },
     deleteContact(state, action) {
-      const index = state.findIndex(contact => contact.id === action.payload);
-      state.splice(index, 1);
+      const index = state.items.findIndex(
+        contact => contact.id === action.payload
+      );
+      state.items.splice(index, 1);
     },
   },
 });
 
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+export const contactsReducer = persistReducer(
+  persistConfig,
+  contactsSlice.reducer
+);
+
 export const { addContact, deleteContact } = contactsSlice.actions;
-export const contactsReducer = contactsSlice.reducer;
 
 // import { createSlice, nanoid } from '@reduxjs/toolkit';
-// import { persistReducer } from 'redux-persist';
-// import storage from 'redux-persist/lib/storage';
 
-// const contactsInitialState = [];
+// const contactsInitialState = {
+//   items: [],
+// };
 
 // const contactsSlice = createSlice({
 //   name: 'contacts',
@@ -42,7 +57,7 @@ export const contactsReducer = contactsSlice.reducer;
 //   reducers: {
 //     addContact: {
 //       reducer(state, action) {
-//         state.push(action.payload);
+//         state.items.push(action.payload);
 //       },
 //       prepare(name, number) {
 //         return {
@@ -55,20 +70,13 @@ export const contactsReducer = contactsSlice.reducer;
 //       },
 //     },
 //     deleteContact(state, action) {
-//       const index = state.findIndex(contact => contact.id === action.payload);
-//       state.splice(index, 1);
+//       const index = state.items.findIndex(
+//         contact => contact.id === action.payload
+//       );
+//       state.items.splice(index, 1);
 //     },
 //   },
 // });
 
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-// };
-
-// export const contactsReducer = persistReducer(
-//   persistConfig,
-//   contactsSlice.reducer
-// );
-
 // export const { addContact, deleteContact } = contactsSlice.actions;
+// export const contactsReducer = contactsSlice.reducer;
