@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { addContact } from 'redux/contactsSlice';
 import {
   ContainerForm,
@@ -11,6 +11,7 @@ import {
 
 export default function ContactForm() {
   const dispatch = useDispatch();
+  const contactItems = useSelector(state => state.contacts.items);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -33,8 +34,16 @@ export default function ContactForm() {
 
   const handleAddContact = () => {
     if (name !== '' && number !== '') {
-      dispatch(addContact(name, number));
-      reset();
+      const isNameExists = contactItems.some(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      );
+      if (isNameExists) {
+        alert(`${name} is already in contacts.`);
+        return;
+      } else {
+        dispatch(addContact(name, number));
+        reset();
+      }
     }
   };
 
